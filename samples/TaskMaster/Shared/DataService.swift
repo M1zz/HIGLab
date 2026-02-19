@@ -69,12 +69,21 @@ final class DataService {
         let startOfDay = calendar.startOfDay(for: Date())
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
-        let predicate = #Predicate<TaskItem> { task in
-            if let dueDate = task.dueDate {
-                return dueDate >= startOfDay && dueDate < endOfDay
-            }
-            return false
+               // MARK: - 기존 버그가 있던 코드
+//        let predicate = #Predicate<TaskItem> { task in
+//            if let dueDate = task.dueDate {
+//                return dueDate >= startOfDay && dueDate < endOfDay
+//            }
+//            return false
+//        }
+        
+        // MARK: - 수정 된 코드
+        let predicate = #Predicate<TaskItem> {
+            $0.dueDate != nil &&
+            $0.dueDate! >= startOfDay &&
+            $0.dueDate! < endOfDay
         }
+    
         let descriptor = FetchDescriptor<TaskItem>(
             predicate: predicate,
             sortBy: [SortDescriptor(\.priority, order: .reverse)]
